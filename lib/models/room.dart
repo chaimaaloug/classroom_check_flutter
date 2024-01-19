@@ -1,3 +1,7 @@
+import 'package:json_annotation/json_annotation.dart';
+part 'room.g.dart';
+
+@JsonSerializable()
 class Room {
   final String name;
   final String pictureUrl;
@@ -9,15 +13,10 @@ class Room {
     required this.geo,
   });
 
-  factory Room.fromJson(Map<String, dynamic> json) {
-    return Room(
-      name: json['room']['name'],
-      pictureUrl: json['room']['pictureUrl'],
-      geo: Geo.fromJson(json['room']['geo']),
-    );
-  }
+  factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 }
 
+@JsonSerializable()
 class Geo {
   final double latitude;
   final double longitude;
@@ -29,11 +28,5 @@ class Geo {
     required this.radius,
   });
 
-  factory Geo.fromJson(Map<String, dynamic> json) {
-    return Geo(
-      latitude: json['latitude'],
-      longitude: json['longitude'],
-      radius: json['radius'],
-    );
-  }
+  factory Geo.fromJson(Map<String, dynamic> json) => _$GeoFromJson(json);
 }

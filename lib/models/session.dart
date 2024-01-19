@@ -1,5 +1,8 @@
-import 'package:uuid/uuid.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'session.g.dart';
+
+@JsonSerializable()
 class Session {
   final String id;
   final String startDate;
@@ -11,11 +14,8 @@ class Session {
     required this.endDate,
   });
 
-  factory Session.fromJson(Map<String, dynamic> json) {
-    return Session(
-      id: json['id'] as String,
-      startDate: json['startDate'] as String,
-      endDate: json['endDate'] as String,
-    );
-  }
+  factory Session.fromJson(Map<String, dynamic> json) =>
+      _$SessionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SessionToJson(this);
 }

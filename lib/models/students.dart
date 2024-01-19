@@ -1,16 +1,16 @@
-import 'package:prj_flutter/models/student.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'student.dart';
 
+part 'students.g.dart';
+
+@JsonSerializable()
 class Students {
   final List<Student> students;
 
   const Students({required this.students});
 
-  factory Students.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> studentsJson = json['students'] ?? [];
-    final List<Student> students = studentsJson
-        .map((dynamic studentJson) => Student.fromJson(studentJson))
-        .toList();
+  factory Students.fromJson(Map<String, dynamic> json) =>
+      _$StudentsFromJson(json);
 
-    return Students(students: students);
-  }
+  Map<String, dynamic> toJson() => _$StudentsToJson(this);
 }

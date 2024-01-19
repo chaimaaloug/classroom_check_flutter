@@ -6,6 +6,7 @@ import 'package:prj_flutter/models/course.dart';
 import 'package:prj_flutter/models/room.dart';
 import 'package:prj_flutter/models/students.dart';
 import 'package:prj_flutter/models/session.dart';
+import 'package:prj_flutter/views/login_screen.dart';
 import 'package:prj_flutter/views/students_list_screen.dart';
 
 import 'package:flutter_map/flutter_map.dart';
@@ -42,7 +43,7 @@ class QRCodeContentScreenState extends State<QRCodeContentScreen> {
     try {
       if (response.statusCode == 200) {
         setState(() {
-          room = Room.fromJson(response.data);
+          room = Room.fromJson(response.data['room']);
           course = Course.fromJson(response.data['course']);
           students = Students.fromJson(response.data);
           session = Session.fromJson(response.data['session']);
@@ -145,9 +146,26 @@ class QRCodeContentScreenState extends State<QRCodeContentScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => StudentsListScreen(
-                                students: students, session: session),
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation,
+                                    secondaryAnimation) =>
+                                StudentsListScreen(
+                                    students: students, session: session),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              var begin = Offset(1.0, 0.0);
+                              var end = Offset.zero;
+                              var curve = Curves.easeInOut; // Vitesse
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
                           ),
                         );
                       },
@@ -156,6 +174,40 @@ class QRCodeContentScreenState extends State<QRCodeContentScreen> {
                       ),
                       child: const Text(
                         'Liste des Élèves 👩‍🎓',
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    const LoginScreen(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              var begin = Offset(1.0, 0.0);
+                              var end = Offset.zero;
+                              var curve = Curves.easeInOut;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber.shade400,
+                      ),
+                      child: const Text(
+                        'Connexion 👉🏻',
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ),

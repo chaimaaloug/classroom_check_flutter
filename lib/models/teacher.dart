@@ -1,5 +1,8 @@
-import 'package:uuid/uuid.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'teacher.g.dart';
+
+@JsonSerializable()
 class Teacher {
   final String id;
   final String lastName;
@@ -15,13 +18,8 @@ class Teacher {
     required this.pictureUrl,
   });
 
-  factory Teacher.fromJson(Map<String, dynamic> json) {
-    return Teacher(
-      id: json['id'] as String,
-      lastName: json['lastName'] as String,
-      firstName: json['firstName'] as String,
-      email: json['email'] as String,
-      pictureUrl: json['pictureUrl'] as String,
-    );
-  }
+  factory Teacher.fromJson(Map<String, dynamic> json) =>
+      _$TeacherFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeacherToJson(this);
 }

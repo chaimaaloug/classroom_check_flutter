@@ -1,5 +1,8 @@
-import 'package:uuid/uuid.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'student.g.dart';
+
+@JsonSerializable()
 class Student {
   final String id;
   final String lastName;
@@ -15,13 +18,8 @@ class Student {
     required this.hasSigned,
   });
 
-  factory Student.fromJson(Map<String, dynamic> json) {
-    return Student(
-      id: json['id'] as String,
-      lastName: json['lastName'] as String,
-      firstName: json['firstName'] as String,
-      email: json['email'] as String,
-      hasSigned: json['hasSigned'] as bool,
-    );
-  }
+  factory Student.fromJson(Map<String, dynamic> json) =>
+      _$StudentFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StudentToJson(this);
 }
