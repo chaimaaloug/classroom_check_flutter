@@ -17,7 +17,7 @@ class Teacher {
 
   factory Teacher.fromJson(Map<String, dynamic> json) {
     return Teacher(
-      id: Uuid().v4(),
+      id: json['id'] as String,
       lastName: json['lastName'] as String,
       firstName: json['firstName'] as String,
       email: json['email'] as String,

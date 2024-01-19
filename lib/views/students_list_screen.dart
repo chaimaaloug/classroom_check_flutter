@@ -17,44 +17,52 @@ class StudentsListScreen extends StatelessWidget {
       BuildContext context, Student student) async {
     TextEditingController pinCodeController = TextEditingController();
 
-    bool isFormSaved = (await showDialog<bool?>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Signature électronique ✍️'),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text(
-                      'Signature électronique pour ${student.firstName} ${student.lastName}.',
-                    ),
-                    SizedBox(height: 20),
-                    Text('Code PIN de l\'étudiant:'),
-                    TextField(
-                      controller: pinCodeController,
-                      keyboardType: TextInputType.number,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Code PIN',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Valider'),
-                  onPressed: () async {
-                    Navigator.of(context).pop(true);
-                  },
+    String? pinCodeSaved = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+              'Signature électronique pour ${student.firstName} ${student.lastName}'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: pinCodeController,
+                  keyboardType: TextInputType.number,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Code PIN',
+                  ),
                 ),
               ],
-            );
-          },
-        )) ??
-        false;
+            ),
+          ),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.amber.shade500,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(pinCodeController.text);
+                },
+                child: Text(
+                  'Valider',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
 
-    if (isFormSaved) {
+    if (pinCodeSaved != null) {
       try {
         final dio = Dio();
         final response = await dio.post(
@@ -62,10 +70,10 @@ class StudentsListScreen extends StatelessWidget {
           data: {
             "studentId": student.id,
             "sessionId": session!.id,
-            "pinCode": pinCodeController.text,
+            "pinCode": pinCodeSaved,
           },
         );
-
+        print('response $response');
         if (response.statusCode == 204) {
           Navigator.of(context).pop();
         } else if (response.statusCode == 403) {
@@ -83,9 +91,9 @@ class StudentsListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Liste des Élèves 👩‍🎓'),
-        backgroundColor: Colors.amber.shade700,
-      ),
+          title: Text('Liste des Élèves 👩‍🎓'),
+          backgroundColor: Colors.amber.shade500,
+          foregroundColor: Colors.black),
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         itemCount: students?.students.length ?? 0,
@@ -102,10 +110,6 @@ class StudentsListScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(student.hasSigned ? 'Présent' : 'Absent'),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {},
-                  ),
                 ],
               ),
             ),

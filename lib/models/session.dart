@@ -13,7 +13,7 @@ class Session {
 
   factory Session.fromJson(Map<String, dynamic> json) {
     return Session(
-      id: Uuid().v4(),
+      id: json['id'] as String,
       startDate: json['startDate'] as String,
       endDate: json['endDate'] as String,
     );
